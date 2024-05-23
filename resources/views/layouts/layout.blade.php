@@ -308,7 +308,7 @@
             </li><!-- End Components Nav -->
 
             <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{ request() -> is('peminjaman*') ? '' : 'collapsed' }}" href="{{ route('peminjaman.index') }}">
                 <i class="bi bi-journal-text"></i><span>Peminjaman</span>
             </a>
             </li><!-- End Forms Nav -->

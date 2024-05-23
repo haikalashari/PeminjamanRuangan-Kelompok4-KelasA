@@ -11,6 +11,7 @@ class Peminjaman extends Model
     protected $table = 'peminjaman';
     protected $primaryKey = 'id';
     protected $guarded = [];
+    protected $with = ['ruangan', 'mahasiswa'];
 
     public function ruangan()
     {
