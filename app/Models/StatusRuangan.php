@@ -16,4 +16,9 @@ class StatusRuangan extends Model
     {
         return $this->belongsTo(Ruangan::class);
     }
+
+    public function createNewStatus($data)
+    {
+
+    }
 }

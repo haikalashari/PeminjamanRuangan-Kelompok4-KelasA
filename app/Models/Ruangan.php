@@ -11,14 +11,16 @@ class Ruangan extends Model
     protected $table = 'ruangan';
     protected $primaryKey = 'id';
     protected $guarded = [];
+    protected $with = ['status'];
 
     public function status()
     {
-        return $this->hasOne(StatusRuangan::class);
+        return $this->hasMany(StatusRuangan::class);
     }
 
     public function peminjaman()
     {
         return $this->hasMany(Peminjaman::class);
     }
+
 }

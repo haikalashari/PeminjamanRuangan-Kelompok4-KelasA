@@ -45,20 +45,33 @@
 
         <div class="d-flex align-items-center justify-content-between">
             <a href="index.html" class="logo d-flex align-items-center">
-            <img src="assets/img/logo.png" alt="">
+            {{-- <img src="assets/img/logo.png" alt=""> --}}
             <span class="d-none d-lg-block">NiceAdmin</span>
             </a>
+            @Auth
             <i class="bi bi-list toggle-sidebar-btn"></i>
+            @endAuth
         </div><!-- End Logo -->
 
+        @Auth
         <div class="search-bar">
             <form class="search-form d-flex align-items-center" method="POST" action="#">
             <input type="text" name="query" placeholder="Search" title="Enter search keyword">
             <button type="submit" title="Search"><i class="bi bi-search"></i></button>
             </form>
         </div><!-- End Search Bar -->
+        @endAuth
 
         <nav class="header-nav ms-auto">
+            @guest
+                @if (Route::has('login'))
+                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                @endif
+
+                @if (Route::has('register'))
+                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                @endif
+            @else
             <ul class="d-flex align-items-center">
 
             <li class="nav-item d-block d-lg-none">
@@ -211,8 +224,8 @@
             <li class="nav-item dropdown pe-3">
 
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-                <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+                {{-- <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle"> --}}
+                <span class="d-none d-md-block dropdown-toggle ps-2">Profile</span>
                 </a><!-- End Profile Iamge Icon -->
 
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
@@ -255,9 +268,14 @@
                 </li>
 
                 <li>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Sign Out</span>
+                    <a class="dropdown-item d-flex align-items-center" href="{{ route('logout') }}"
+                        onclick="event.preventDefault();
+                                                document.getElementById('logout-form').submit();">
+                                {{ __('Logout') }}
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                     </a>
                 </li>
 
@@ -265,24 +283,26 @@
             </li><!-- End Profile Nav -->
 
             </ul>
+            @endguest
         </nav><!-- End Icons Navigation -->
 
     </header><!-- End Header -->
 
+    @Auth
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
 
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-            <a class="nav-link " href="index.html">
+            <a class="nav-link {{ request() -> is('home') ? '' : 'collapsed' }}" href="{{ route('home') }}">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
             </a>
             </li><!-- End Dashboard Nav -->
 
             <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{ request() -> is('ruangan*') ? '' : 'collapsed' }}" href="{{ route('ruangan.index') }}">
                 <i class="bi bi-menu-button-wide"></i><span>Ruangan</span>
             </a>
             </li><!-- End Components Nav -->
@@ -347,15 +367,20 @@
         </ul>
 
     </aside><!-- End Sidebar-->
+    @endAuth
 
-    <main id="main" class="main">
+    @guest
+        <main id="main" class="main ms-auto">
+    @else
+        <main id="main" class="main">
+    @endguest
 
         @yield('content')
 
     </main><!-- End #main -->
 
     <!-- ======= Footer ======= -->
-    <footer id="footer" class="footer">
+    {{-- <footer id="footer" class="footer">
         <div class="copyright">
             &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
         </div>
@@ -366,9 +391,9 @@
             <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
             Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
         </div>
-    </footer><!-- End Footer -->
+    </footer> --}}
+    <!-- End Footer -->
 
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
 
