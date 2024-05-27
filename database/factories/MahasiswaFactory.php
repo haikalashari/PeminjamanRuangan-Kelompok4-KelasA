@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,8 @@ class MahasiswaFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nim' => $this->faker->unique()->numerify('D##########'),
+            'user_id' => User::factory(),
         ];
     }
 }

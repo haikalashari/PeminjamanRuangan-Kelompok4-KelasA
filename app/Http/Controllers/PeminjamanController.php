@@ -2,34 +2,110 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ruangan;
 use App\Models\Peminjaman;
+use App\Models\PeminjamanView;
 use Illuminate\Http\Request;
+use App\Models\StatusRuangan;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PeminjamanController extends Controller
 {
     public function index()
     {
-        $peminjamans = Peminjaman::all();
+        $peminjamans = PeminjamanView::all();
+
+        // Memanggil fungsi MySQL hitungTotalPeminjamanBulanIni PROCEDURE
+        $totalPeminjamanBulanIniQuery = DB::select('CALL hitungTotalPeminjamanBulanIni()');
+        $totalPeminjamanBulanIni = $totalPeminjamanBulanIniQuery[0]->hasil;
+
+        // Memanggil fungsi MySQL avg_peminjaman_bulan_ini_function
+        $rataPeminjamanBulanIniQuery = DB::select('SELECT avg_peminjaman_bulan_ini_function() AS rata_rata');
+        // Mengambil nilai rata-rata dari hasil query
+        $rataPeminjamanBulanIni = $rataPeminjamanBulanIniQuery[0]->rata_rata;
+
+        $data = [
+            [
+                'title' => 'Jumlah Peminjaman Bulan Ini',
+                'icon' => 'bi-cart',
+                'value' => $totalPeminjamanBulanIni
+            ],
+            [
+                'title' => 'Rata-rata Peminjaman Bulan Ini',
+                'icon' => 'bi-cart',
+                'value' => $rataPeminjamanBulanIni
+            ]
+        ];
         // dd($peminjamans);
-        return view('peminjaman.index', compact('peminjamans'));
+        return view('peminjaman.index', compact('peminjamans', 'data'));
     }
 
-    public function create()
+    public function create(Ruangan $ruangan)
     {
-        return view('peminjaman.form');
+        $status = $ruangan->status->last()->status ?? 'Tidak ada status';
+
+
+        if ($status !== 'Diperbaiki') {
+            return view('peminjaman.form', compact('ruangan'));
+        }
+
+        return redirect()->route('home')->with('error', 'Ruangan Sedang Tidak Tersedia');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'ruangan_id' => 'required',
-            'mahasiswa_nim' => 'required',
-            'tanggal_pinjam' => 'required',
-            'tanggal_kembali' => 'required',
-        ]);
+        try {
+            DB::beginTransaction();
 
-        Peminjaman::create($request->all());
-        return redirect()->route('peminjaman.index');
+            $request->validate([
+                'ruangan_id' => 'required',
+                'mahasiswa_nim' => 'required',
+                'tgl_mulai' => 'required',
+                'tgl_selesai' => 'required',
+                'jam_mulai' => 'required',
+                'jam_selesai' => 'required',
+                'tujuan' => 'required',
+            ]);
+
+            // cek apakah sudah terdapat peminjaman pada waktu yang sama
+            $peminjaman = Peminjaman::where('ruangan_id', $request->ruangan_id)
+                ->where('tgl_mulai', $request->tgl_mulai)
+                ->where('tgl_selesai', $request->tgl_selesai)
+                ->where('jam_mulai', $request->jam_mulai)
+                ->where('jam_selesai', $request->jam_selesai)
+                ->first();
+
+            if ($peminjaman) {
+                return redirect()->route('home')->with('error', 'Ruangan sudah dipinjam pada waktu tersebut');
+            }
+
+            // Trigger akan otomatis berjalan setelah insert
+            Peminjaman::create([
+                'ruangan_id' => $request->ruangan_id,
+                'mahasiswa_nim' => $request->mahasiswa_nim,
+                'tgl_mulai' => $request->tgl_mulai,
+                'tgl_selesai' => $request->tgl_selesai,
+                'jam_mulai' => $request->jam_mulai,
+                'jam_selesai' => $request->jam_selesai,
+                'tujuan' => $request->tujuan,
+            ]);
+
+            StatusRuangan::create([
+                'ruangan_id' => $request->ruangan_id,
+                'status' => 'Dipinjam',
+            ]);
+
+            DB::commit();
+
+            if(!Auth::user()->admin) {
+                return redirect()->route('home')->with('success', 'Peminjaman berhasil ditambahkan');
+            }
+            return redirect()->route('peminjaman.index')->with('success', 'Peminjaman berhasil ditambahkan');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function show(Peminjaman $peminjaman)
@@ -44,6 +120,13 @@ class PeminjamanController extends Controller
 
     public function update(Request $request, Peminjaman $peminjaman)
     {
+        /*
+
+        UPDATE PEMINJAMAN BELUM
+
+        */
+
+
         $request->validate([
             'ruangan_id' => 'required',
             'mahasiswa_nim' => 'required',
@@ -52,13 +135,33 @@ class PeminjamanController extends Controller
         ]);
 
         $peminjaman->update($request->all());
+
         return redirect()->route('peminjaman.index');
     }
 
     public function destroy(Peminjaman $peminjaman)
     {
-        $peminjaman->delete();
-        return redirect()->route('peminjaman.index');
+        try {
+            DB::beginTransaction();
+
+            StatusRuangan::create([
+                'ruangan_id' => $peminjaman->ruangan_id,
+                'status' => 'Tersedia',
+            ]);
+            $peminjaman->delete();
+
+            DB::commit();
+            return redirect()->route('peminjaman.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function riwayat()
+    {
+        $peminjamans = Peminjaman::where('mahasiswa_nim', auth()->user()->nim)->get();
+        return view('peminjaman.index', compact('peminjamans'));
     }
 
 }

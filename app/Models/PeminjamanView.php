@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Peminjaman extends Model
+class PeminjamanView extends Model
 {
     use HasFactory;
-    
-    protected $table = 'peminjaman';
+    protected $table = 'v_peminjaman';
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $with = ['ruangan', 'mahasiswa'];

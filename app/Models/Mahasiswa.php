@@ -15,11 +15,6 @@ class Mahasiswa extends Model
     protected $guarded = [];
     protected $with = ['user'];
 
-    public function peminjaman()
-    {
-        return $this->hasMany(Peminjaman::class, 'mahasiswa_nim', 'nim');
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

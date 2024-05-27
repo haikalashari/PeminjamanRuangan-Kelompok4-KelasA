@@ -1,6 +1,17 @@
 @extends('layouts.layout')
 
 @section('content')
+    @if(session('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('error') }}
+        </div>
+    @endif
     <h1>Ruang Sidang Informatika</h1>
 
     <div class="d-flex justify-content-end my-4 mx-4">
@@ -11,6 +22,9 @@
         @foreach($ruangans->chunk(2) as $chunk)
             <div class="row">
                 @foreach($chunk as $ruangan)
+                    @php
+                        $status = $ruangan->status->last()->status ?? 'Tidak ada status';
+                    @endphp
                     <div class="col-md-5">
                         <div class="card">
                             <div class="card-body">
@@ -27,7 +41,7 @@
                                     <div class="col d-flex flex-row gap-2">
                                         <p class="card-subtitle text-muted">Status Ruangan :</p>
                                         <p class="card-subtitle text-muted">
-                                            {{ $ruangan->status->last()->status }}
+                                            {{ $status }}
                                         </p>
                                     </div>
                                 </div>

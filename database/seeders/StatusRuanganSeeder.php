@@ -14,11 +14,11 @@ class StatusRuanganSeeder extends Seeder
     public function run(): void
     {
         DB::table('status_ruangan')->insert([
-            ['ruangan_id' => 1, 'status' => 'tidak tersedia'],
-            ['ruangan_id' => 2, 'status' => 'tidak tersedia'],
-            ['ruangan_id' => 3, 'status' => 'tidak tersedia'],
-            ['ruangan_id' => 4, 'status' => 'tersedia'],
-            ['ruangan_id' => 5, 'status' => 'diperbaiki'],
+            ['ruangan_id' => 1, 'status' => 'Dipinjam'],
+            ['ruangan_id' => 2, 'status' => 'Dipinjam'],
+            ['ruangan_id' => 3, 'status' => 'Dipinjam'],
+            ['ruangan_id' => 4, 'status' => 'Tersedia'],
+            ['ruangan_id' => 5, 'status' => 'Diperbaiki'],
         ]);
     }
 }

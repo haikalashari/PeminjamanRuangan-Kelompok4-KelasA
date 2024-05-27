@@ -1,9 +1,47 @@
 @extends('layouts.layout')
 
 @section('content')
+    @if(session('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('error') }}
+        </div>
+    @endif
     <h1>Data Peminjaman</h1>
 
     <section class="section">
+        @if(Auth::user()->admin)
+        <div class="row">
+            <!-- Left side columns -->
+            <div class="col-lg-12">
+                <div class="row">
+                    @foreach($data as $item)
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card info-card {{ $item['icon'] == 'bi-cart' ? 'sales-card' : ($item['icon'] == 'bi-shop' ? 'revenue-card' : 'customers-card') }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ $item['title'] }}</h5>
+
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi {{ $item['icon'] }}"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{ $item['value'] }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div><!-- End Left side columns -->
+        </div>
+        @endif
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -38,23 +76,46 @@
                                     <td>{{ $peminjaman->jam_selesai }}</td>
                                     <td>{{ $peminjaman->tujuan }}</td>
                                     <td>
-                                        <a href="{{ route('peminjaman.show', $peminjaman->id) }}"
-                                            class="btn btn-info">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $peminjaman->id }}">
                                             Detail
-                                        </a>
+                                        </button>
                                         {{-- <a href="{{ route('peminjaman.edit', $peminjaman->id) }}"
                                             class="btn btn-warning">
                                             Edit
                                         </a>
+                                        --}}
+                                    </td>
+                                </tr>
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal{{ $peminjaman->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Peminjaman Ruangan {{ $peminjaman->ruangan->nama }}</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Nama Peminjam: {{ $peminjaman->mahasiswa->user->name }}</p>
+                                        <p>Nama Ruangan: {{ $peminjaman->ruangan->nama }}</p>
+                                        <p>Waktu Mulai: {{ $peminjaman->jam_mulai }}</p>
+                                        <p>Waktu Selesai: {{ $peminjaman->jam_selesai }}</p>
+                                        <p>Jam Mulai: {{ $peminjaman->jam_mulai }}</p>
+                                        <p>Jam Selesai: {{ $peminjaman->jam_selesai }}</p>
+                                        <p>Tujuan: {{ $peminjaman->tujuan }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         <form 
                                             action="{{ route('peminjaman.destroy', $peminjaman->id) }}" 
                                             method="post" style="display: inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form> --}}
-                                    </td>
-                                </tr>
+                                            <button type="submit" class="btn btn-danger">Batalkan</button>
+                                        </form>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
                                 @endforeach
                                 
                             </tbody>

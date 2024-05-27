@@ -17,7 +17,10 @@ class StatusRuanganFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'ruangan_id' => $this->faker->numberBetween(1, 20),
+            'status' => $this->faker->randomElement(['Tersedia', 'Dipinjam', 'Diperbaiki']),
+            'created_at' => fake()->dateTimeThisMonth(),
+            'updated_at' => fake()->dateTimeThisMonth(),
         ];
     }
 }

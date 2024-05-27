@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ruangan;
-use App\Models\StatusRuangan;
 use Illuminate\Http\Request;
+use App\Models\StatusRuangan;
+use Illuminate\Support\Facades\DB;
 
 class RuanganController extends Controller
 {
     public function index()
     {
         $ruangans = Ruangan::all();
-        // dd($ruangans->first()->status->last()->status);
 
         return view('ruangan.index', compact('ruangans'));
     }
@@ -31,19 +31,34 @@ class RuanganController extends Controller
 
     public function store(Request $request)
     {
-        Ruangan::create([
-            'nama' => $request->nama,
-            'kapasitas' => $request->kapasitas,
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $this->newStatusRuangan(Ruangan::latest()->first()->id, $request->status);
+            $request->validate([
+                'nama' => 'required|unique:ruangan,nama',
+                'kapasitas' => 'required|numeric',
+            ]);
+            
+    
+            Ruangan::create([
+                'nama' => $request->nama,
+                'kapasitas' => $request->kapasitas,
+            ]);
+    
+            $this->newStatusRuangan(Ruangan::latest()->first()->id, $request->status);
+    
+            DB::commit();
 
-        return redirect()->route('ruangan.index');
+            return redirect()->route('ruangan.index')->with('success', 'Ruangan berhasil ditambahkan');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('ruangan.index')
+                ->with('error', $th->getMessage());
+        }
     }
 
-    public function show($id)
+    public function show(Ruangan $ruangan)
     {
-        $ruangan = Ruangan::find($id);
 
         return view('ruangan.show', compact('ruangan'));
     }
@@ -55,19 +70,29 @@ class RuanganController extends Controller
 
     public function update(Request $request, Ruangan $ruangan)
     {
-        $request->validate([
-            'nama' => 'required',
-            'kapasitas' => 'required|numeric',
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $ruangan->update([
-            'nama' => $request->nama,
-            'kapasitas' => $request->kapasitas,
-        ]);
+            $request->validate([
+                'nama' => 'required|unique:ruangan,nama,' . $ruangan->id,
+                'kapasitas' => 'required|numeric',
+            ]);
+    
+            $ruangan->update([
+                'nama' => $request->nama,
+                'kapasitas' => $request->kapasitas,
+            ]);
+    
+            $this->newStatusRuangan($ruangan->id, $request->status);
 
-        $this->newStatusRuangan($ruangan->id, $request->status);
-
-        return redirect()->route('ruangan.index');
+            DB::commit();
+    
+            return redirect()->route('ruangan.index')->with('success', 'Ruangan berhasil diupdate');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('ruangan.index')
+                ->with('error', $th->getMessage());
+        }
     }
 
     public function destroy($id)

@@ -12,16 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('peminjaman', function (Blueprint $table) {
-            $table->id(); 
+            $table->id();
             $table->foreignId('ruangan_id')->constrained('ruangan')->onDelete('cascade');
             $table->string('mahasiswa_nim');
             $table->foreign('mahasiswa_nim')->references('nim')->on('mahasiswa')->onDelete('cascade');
             $table->date('tgl_mulai');
             $table->date('tgl_selesai');
-            $table->dateTime('jam_mulai');
-            $table->dateTime('jam_selesai');
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
             $table->text('tujuan');
             $table->timestamps();
+            $table->unique('created_at', 'index_created_at');
+        });
+
+        Schema::table('peminjaman', function (Blueprint $table) {
+            $table->dropUnique('index_created_at'); // Nama indeks unik yang ada
         });
     }
 
@@ -30,6 +35,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('peminjaman', function (Blueprint $table) {
+            $table->unique('created_at', 'index_created_at');
+        });
+
         Schema::dropIfExists('peminjaman');
     }
 };

@@ -11,14 +11,4 @@ class StatusRuangan extends Model
     protected $table = 'status_ruangan';
     protected $primaryKey = 'id';
     protected $guarded = [];
-
-    public function ruangan()
-    {
-        return $this->belongsTo(Ruangan::class);
-    }
-
-    public function createNewStatus($data)
-    {
-
-    }
 }
