@@ -97,6 +97,8 @@ class RuanganController extends Controller
 
     public function destroy($id)
     {
+        StatusRuangan::where('ruangan_id', $id)->delete(); 
+
         Ruangan::destroy($id);
 
         return redirect()->route('ruangan.index');

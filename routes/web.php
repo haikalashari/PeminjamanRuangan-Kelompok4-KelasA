@@ -58,6 +58,6 @@ Route::controller(AdminController::class)->middleware('auth')->middleware([IsAdm
 Route::controller(UserController::class)->middleware('auth')->group(function () {
     Route::get('/profile', 'show')->name('profile.show');
     Route::get('/profile/edit', 'edit')->name('profile.edit');
-    Route::put('/profile', 'update')->name('profile.update');
+    Route::put('/profile/{user}', 'update')->name('profile.update');
     Route::delete('/profile', 'destroy')->name('profile.destroy');
 });

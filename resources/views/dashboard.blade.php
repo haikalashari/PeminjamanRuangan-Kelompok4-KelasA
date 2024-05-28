@@ -7,9 +7,13 @@
         </div>
     @endif
 
-    @if(session('error'))
+    @if ($errors->any())
         <div class="alert alert-danger" role="alert">
-            {{ session('error') }}
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li class="text-start">{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 <div class="pagetitle">
@@ -63,7 +67,7 @@
                   <div class="activite-label">{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</div>
                   <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
                   <div class="activity-content">
-                    <a href="{{ route('ruangan.show', $item) }}" class="fw-bold text-dark">{{ $item->nama }}</a> telah dipinjam
+                    <a href="{{ route('ruangan.show', $item) }}" class="fw-bold text-dark">{{ $item->nama }}</a> telah ditambahkan
                   </div>
                 </div><!-- End activity item-->
                 @endforeach
@@ -155,18 +159,23 @@
                         const students = @json($students);
                         const admins = @json($admins);
                         const rooms = @json($rooms);
+                        const peminjaman = @json($peminjamans);
 
                         new ApexCharts(document.querySelector("#reportsChart"), {
                           series: [{
-                            name: 'Students',
+                            name: 'Mahasiswa',
                             data: students,
                           }, {
-                            name: 'Admins',
+                            name: 'Admin',
                             data: admins,
                           }, {
-                            name: 'Rooms',
+                            name: 'Ruangan',
                             data: rooms,
-                          }],
+                          }, {
+                            name: 'Peminjaman',
+                            data: peminjaman,
+                          }
+                        ],
                           chart: {
                             height: 350,
                             type: 'area',
@@ -177,7 +186,7 @@
                           markers: {
                             size: 4
                           },
-                          colors: ['#4154f1', '#2eca6a', '#ff771d'],
+                          colors: ['#4154f1', '#2eca6a', '#ff771d', '#f7b924'],
                           fill: {
                             type: "gradient",
                             gradient: {

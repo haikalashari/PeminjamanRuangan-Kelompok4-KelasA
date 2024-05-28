@@ -47,6 +47,11 @@ class PeminjamanController extends Controller
 
 
         if ($status !== 'Diperbaiki') {
+            if(!Auth::user()->mahasiswa) {
+                return redirect()->route('home')->with('error', 'Silahkan isi NIM terlebih dahulu di Profile Anda');
+            }
+
+
             return view('peminjaman.form', compact('ruangan'));
         }
 
@@ -120,21 +125,15 @@ class PeminjamanController extends Controller
 
     public function update(Request $request, Peminjaman $peminjaman)
     {
-        /*
-
-        UPDATE PEMINJAMAN BELUM
-
-        */
-
-
-        $request->validate([
-            'ruangan_id' => 'required',
-            'mahasiswa_nim' => 'required',
-            'tanggal_pinjam' => 'required',
-            'tanggal_kembali' => 'required',
+        $peminjaman->update([
+            'ruangan_id' => $request->ruangan_id,
+            'mahasiswa_nim' => $request->mahasiswa_nim,
+            'tgl_mulai' => $request->tgl_mulai,
+            'tgl_selesai' => $request->tgl_selesai,
+            'jam_mulai' => $request->jam_mulai,
+            'jam_selesai' => $request->jam_selesai,
+            'tujuan' => $request->tujuan,        
         ]);
-
-        $peminjaman->update($request->all());
 
         return redirect()->route('peminjaman.index');
     }

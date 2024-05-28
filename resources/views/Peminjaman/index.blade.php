@@ -7,9 +7,13 @@
         </div>
     @endif
 
-    @if(session('error'))
+    @if ($errors->any())
         <div class="alert alert-danger" role="alert">
-            {{ session('error') }}
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li class="text-start">{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
     <h1>Data Peminjaman</h1>
@@ -105,6 +109,10 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <a href="{{ route('peminjaman.edit', $peminjaman->id) }}"
+                                            class="btn btn-warning">
+                                            Edit
+                                        </a>
                                         <form 
                                             action="{{ route('peminjaman.destroy', $peminjaman->id) }}" 
                                             method="post" style="display: inline;">

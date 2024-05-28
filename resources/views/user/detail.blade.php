@@ -7,9 +7,13 @@
         </div>
     @endif
 
-    @if(session('error'))
+    @if ($errors->any())
         <div class="alert alert-danger" role="alert">
-            {{ session('error') }}
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li class="text-start">{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
@@ -68,7 +72,7 @@
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">NIM/NIP</div>
-                    <div class="col-lg-9 col-md-8">{{ $user->nim }}</div>
+                    <div class="col-lg-9 col-md-8">{{ isset($user->admin) ? '' : $user->mahasiswa->nim }}</div>
                   </div>
 
                   <div class="row">
@@ -94,7 +98,14 @@
                     <div class="row mb-3">
                       <label for="NIM" class="col-md-4 col-lg-3 col-form-label">NIM/NIP</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="nim" type="text" class="form-control" id="NIM" value="{{ $user->nim }}" readonly>
+                        @php
+                          $readonly = isset($user->admin) || (isset($user->mahasiswa) && isset($user->mahasiswa->nim)) ? 'readonly' : '';
+                          $nimValue = isset($user->mahasiswa) ? $user->mahasiswa->nim : '';
+                        @endphp
+
+                        <input name="nim" type="text" class="form-control" id="NIM" value="{{ $nimValue }}" {{ $readonly }}>
+
+
                       </div>
                     </div>
 

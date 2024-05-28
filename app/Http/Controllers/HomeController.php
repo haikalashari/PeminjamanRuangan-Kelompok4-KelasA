@@ -195,6 +195,7 @@ class HomeController extends Controller
                 $students = [];
                 $admins = [];
                 $rooms = [];
+                $peminjamans = [];
 
                 for ($date = $startOfMonth; $date->lte($endOfMonth); $date->addDay()) {
                     $dates[] = $date->format('Y-m-d');
@@ -202,9 +203,10 @@ class HomeController extends Controller
                     $students[] = Mahasiswa::whereDate('created_at', '<=', $date)->count();
                     $admins[] = Admin::whereDate('created_at', '<=', $date)->count();
                     $rooms[] = Ruangan::whereDate('created_at', '<=', $date)->count();
+                    $peminjamans[] = Peminjaman::whereDate('created_at', '<=', $date)->count();
                 }
 
-                return view('dashboard', compact('data', 'peminjamanLimaTerbaru', 'ruanganPalingBanyakDipinjam', 'ruanganLimaTerbaru', 'arrayStatusRuangan', 'dates', 'students', 'admins', 'rooms'));
+                return view('dashboard', compact('data', 'peminjamanLimaTerbaru', 'ruanganPalingBanyakDipinjam', 'ruanganLimaTerbaru', 'arrayStatusRuangan', 'dates', 'students', 'admins', 'rooms', 'peminjamans'));
             } catch (\Exception $e) {
                 return redirect()->back()->with('error', $e->getMessage());
             }

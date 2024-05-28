@@ -7,9 +7,13 @@
         </div>
     @endif
 
-    @if(session('error'))
+    @if ($errors->any())
         <div class="alert alert-danger" role="alert">
-            {{ session('error') }}
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li class="text-start">{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
     <h1>Data Admin</h1>

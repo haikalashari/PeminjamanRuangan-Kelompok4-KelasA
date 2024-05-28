@@ -7,9 +7,13 @@
         </div>
     @endif
 
-    @if(session('error'))
+    @if ($errors->any())
         <div class="alert alert-danger" role="alert">
-            {{ session('error') }}
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li class="text-start">{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
@@ -60,7 +64,7 @@
                                     <div class="row">
                                         <div class="col-lg-3 col-md-4 label">NIP</div>
                                         <div class="col-lg-9 col-md-8">
-                                            {{ $admin->user->nim }}
+                                            {{ isset($admin->user->mahasiswa) ? $admin->user->mahasiswa->nim : '' }}
                                         </div>
                                     </div>
 
