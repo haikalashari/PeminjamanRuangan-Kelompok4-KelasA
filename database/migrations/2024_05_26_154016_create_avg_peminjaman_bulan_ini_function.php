@@ -20,7 +20,7 @@ return new class extends Migration
             DETERMINISTIC
             BEGIN
                 DECLARE jumlah_peminjaman INT;
-                DECLARE jumlah_hari INT;
+                DECLARE jumlah_ruangan INT;
                 DECLARE rata_rata DECIMAL(10, 2);
                 
                 SELECT COUNT(*) INTO jumlah_peminjaman
@@ -28,9 +28,10 @@ return new class extends Migration
                 WHERE MONTH(created_at) = MONTH(CURRENT_DATE())
                 AND YEAR(created_at) = YEAR(CURRENT_DATE());
 
-                SELECT DAY(LAST_DAY(CURRENT_DATE())) INTO jumlah_hari;
+                SELECT COUNT(*) INTO jumlah_ruangan
+                FROM ruangan;
                 
-                SET rata_rata = jumlah_peminjaman / jumlah_hari;
+                SET rata_rata = jumlah_peminjaman / jumlah_ruangan;
                 
                 RETURN rata_rata;
             END

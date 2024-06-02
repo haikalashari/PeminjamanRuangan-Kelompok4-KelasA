@@ -12,19 +12,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement('DROP PROCEDURE IF EXISTS hitungTotalPeminjamanBerdasarkanTanggal');
+        DB::statement('DROP PROCEDURE IF EXISTS hitungTotalPeminjamanBulanIni');
 
-        // DB::statement('
-        //     CREATE PROCEDURE hitungTotalPeminjamanBulanIni()
-        //     BEGIN
-        //         DECLARE total INT;
+        DB::statement('
+            CREATE PROCEDURE hitungTotalPeminjamanBulanIni()
+            BEGIN
+                DECLARE total INT;
                 
-        //         SELECT COUNT(*) INTO total FROM peminjaman 
-        //         WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE());
+                SELECT COUNT(*) INTO total FROM peminjaman 
+                WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE());
                 
-        //         SELECT CONCAT("Total peminjaman bulan ini: ", total) AS hasil;
-        //     END
-        // ');
+                SELECT total AS hasil;
+            END
+        ');
     }
 
     /**
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('DROP PROCEDURE IF EXISTS hitungTotalPeminjamanBerdasarkanTanggal');
+        DB::statement('DROP PROCEDURE IF EXISTS hitungTotalPeminjamanBulanIni');
     }
 };

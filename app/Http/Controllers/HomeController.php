@@ -67,8 +67,6 @@ class HomeController extends Controller
                 // Rata rata peminjaman ruangan dalam 30 hari terakhir
                 $rataPeminjaman30HariTerakhir = Peminjaman::where('created_at', '>=', now()->subDays(30))->count() / Ruangan::count();
                 
-                // ambil 2 angka dibelakang koma
-                
                 // Rata rata peminjaman dalam tahun ini
                 $rataPeminjamanTahunIni = Peminjaman::where('created_at', '>=', now()->startOfYear())->count() / Ruangan::count();
                 
@@ -217,7 +215,9 @@ class HomeController extends Controller
             $peminjamans = DB::table('peminjaman')
                         ->select('*', DB::raw('
                             IF(
-                                NOW() BETWEEN CONCAT(tgl_mulai, " ", jam_mulai) AND DATE_ADD(CONCAT(tgl_mulai, " ", jam_mulai), INTERVAL TIMESTAMPDIFF(MINUTE, jam_mulai, jam_selesai) MINUTE),
+                                NOW() BETWEEN CONCAT(tgl_mulai, " ", jam_mulai) 
+                                AND DATE_ADD(CONCAT(tgl_mulai, " ", jam_mulai), 
+                                INTERVAL TIMESTAMPDIFF(MINUTE, jam_mulai, jam_selesai) MINUTE),
                                 "Tidak Tersedia",
                                 "Tersedia"
                             ) AS status
