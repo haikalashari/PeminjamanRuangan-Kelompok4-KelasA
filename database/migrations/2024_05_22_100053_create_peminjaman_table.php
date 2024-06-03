@@ -22,11 +22,11 @@ return new class extends Migration
             $table->time('jam_selesai');
             $table->text('tujuan');
             $table->timestamps();
-            $table->unique('created_at', 'index_created_at');
-        });
 
-        Schema::table('peminjaman', function (Blueprint $table) {
-            $table->dropUnique('index_created_at'); // Nama indeks unik yang ada
+            $table->index('mahasiswa_nim');
+            $table->index('ruangan_id');
+            $table->index('tgl_mulai');
+            $table->index('tgl_selesai');
         });
     }
 
@@ -36,7 +36,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('peminjaman', function (Blueprint $table) {
-            $table->unique('created_at', 'index_created_at');
+            $table->dropIndex(['mahasiswa_nim']);
+            $table->dropIndex(['ruangan_id']);
+            $table->dropIndex(['tgl_mulai']);
+            $table->dropIndex(['tgl_selesai']);
         });
 
         Schema::dropIfExists('peminjaman');
