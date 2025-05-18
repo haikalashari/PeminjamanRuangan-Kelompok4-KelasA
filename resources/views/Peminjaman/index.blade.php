@@ -57,16 +57,13 @@
                         <table class="table datatable">
                             <thead>
                                 <tr>
-                                    <th>
-                                        <b>Nama Peminjam</b>
-                                    </th>
-                                    <th>Nama Ruangan</th>
-                                    <th data-type="date" data-format="YYYY/DD/MM HH:mm:ss">
-                                        Waktu Mulai
-                                    </th>
-                                    <th data-type="date" data-format="YYYY/DD/MM HH:mm:ss">
-                                        Waktu Selesai
-                                    </th>
+                                    <th>No</th>
+                                    <th>Nama</th>
+                                    <th>NIM</th>
+                                    <th>Ruangan</th>
+                                    <th>Tanggal Peminjaman</th>
+                                    <th>Jam Mulai</th>
+                                    <th>Jam Selesai</th>
                                     <th>Tujuan</th>
                                     <th>Action</th>
                                 </tr>
@@ -74,8 +71,11 @@
                             <tbody>
                                 @foreach($peminjamans as $peminjaman)
                                 <tr>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $peminjaman->mahasiswa->user->name }}</td>
+                                    <td>{{ $peminjaman->mahasiswa->nim }}</td>
                                     <td>{{ $peminjaman->ruangan->nama }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_mulai)->format('d F Y') }}</td>
                                     <td>{{ $peminjaman->jam_mulai }}</td>
                                     <td>{{ $peminjaman->jam_selesai }}</td>
                                     <td>{{ $peminjaman->tujuan }}</td>
@@ -83,11 +83,6 @@
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $peminjaman->id }}">
                                             Detail
                                         </button>
-                                        {{-- <a href="{{ route('peminjaman.edit', $peminjaman->id) }}"
-                                            class="btn btn-warning">
-                                            Edit
-                                        </a>
-                                        --}}
                                     </td>
                                 </tr>
                                 <!-- Modal -->
@@ -125,7 +120,6 @@
                                 </div>
                                 </div>
                                 @endforeach
-                                
                             </tbody>
                         </table>
                         <!-- End Table with stripped rows -->
