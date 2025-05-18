@@ -28,52 +28,38 @@
 
     <section class="py-5">
         <div class="container px-4 px-lg-5 mt-5">
-            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                @foreach($ruangans as $ruangan)
-                    @php
-                        $status = $ruangan->status;
-                    @endphp
-                <div class="col mb-5">
-                    <div class="card h-100">
-                        <!-- Product image-->
-                        <img class="card-img-top" src="https://source.unsplash.com/450x300?room" alt="..." />
-                        <!-- Product details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name-->
-                                <h5 class="fw-bolder">{{ $ruangan->nama }}</h5>
-                                <h6>Kapasitas</h6>
-                                <!-- Product price-->
-                                {{ $ruangan->kapasitas }} Orang
-
-                                {{-- status  --}}
-                                <div class="text-center">
-                                    @if($status == 'Tersedia')
-                                        <span class="badge bg-success">{{ $status }}</span>
-                                    @else
-                                        <span class="badge bg-danger">{{ $status }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            {{-- buat kondisi tombol tidak bisa ditekan ketika status tidak == tersedia --}}
-                            @if($status == 'Tersedia')
-                                <div class="text-center">
-                                    <a class="btn btn-outline-dark mt-auto" href="{{ route('peminjaman.create', $ruangan->id) }}">Pinjam</a>
-                                </div>
-                            @else
-                                <div class="text-center">
-                                    <p class="btn btn-outline-dark mt-auto" disabled>Pinjam</p>
-                                </div>
-                            @endif
+            <div class="row justify-content-center">
+                <!-- Card Sesi Pagi -->
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Sesi Pagi</h5>
+                            <p class="card-text">08:00 - 12:00</p>
+                            <a href="{{ route('peminjaman.create', ['sesi' => 'pagi']) }}" class="btn btn-primary">Pinjam Sesi Pagi</a>
                         </div>
                     </div>
                 </div>
-                @endforeach
+                <!-- Card Sesi Siang -->
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Sesi Siang</h5>
+                            <p class="card-text">13:00 - 17:00</p>
+                            <a href="{{ route('peminjaman.create', ['sesi' => 'siang']) }}" class="btn btn-primary">Pinjam Sesi Siang</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card Sesi Malam -->
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Sesi Malam</h5>
+                            <p class="card-text">18:00 - 22:00</p>
+                            <a href="{{ route('peminjaman.create', ['sesi' => 'malam']) }}" class="btn btn-primary">Pinjam Sesi Malam</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-
 @endsection

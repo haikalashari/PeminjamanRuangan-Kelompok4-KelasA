@@ -41,21 +41,11 @@ class PeminjamanController extends Controller
         return view('peminjaman.index', compact('peminjamans', 'data'));
     }
 
-    public function create(Ruangan $ruangan)
+    public function create(Request $request)
     {
-        $status = $ruangan->status->last()->status ?? 'Tidak ada status';
-
-
-        if ($status !== 'Diperbaiki') {
-            if(!Auth::user()->mahasiswa) {
-                return redirect()->route('home')->with('error', 'Silahkan isi NIM terlebih dahulu di Profile Anda');
-            }
-
-
-            return view('peminjaman.form', compact('ruangan'));
-        }
-
-        return redirect()->route('home')->with('error', 'Ruangan Sedang Tidak Tersedia');
+        $sesi = $request->query('sesi');
+        $ruangans = \App\Models\Ruangan::all();
+        return view('peminjaman.form', compact('ruangans', 'sesi'));
     }
 
     private function getSessionTime($sesi)

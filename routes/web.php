@@ -36,7 +36,7 @@ Route::controller(RuanganController::class)->middleware('auth')->middleware([IsA
 
 Route::controller(PeminjamanController::class)->middleware('auth')->group(function () {
     Route::get('/peminjaman/riwayat', 'riwayat')->name('peminjaman.riwayat');
-    Route::get('/peminjaman/{ruangan}', 'create')->name('peminjaman.create');
+    Route::get('/peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create');
     Route::post('/peminjaman', 'store')->name('peminjaman.store');
     Route::get('/peminjaman/{peminjaman}', 'show')->name('peminjaman.show');
     Route::get('/peminjaman/{peminjaman}/edit', 'edit')->name('peminjaman.edit');
