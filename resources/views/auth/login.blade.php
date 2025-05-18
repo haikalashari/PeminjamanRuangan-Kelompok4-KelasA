@@ -1,13 +1,15 @@
 @extends('layouts.layout')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
+<div class="container min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="row justify-content-center w-100" style="margin-top: -10vh;">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0">{{ __('Login') }}</h4>
+                </div>
 
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
@@ -51,19 +53,20 @@
                             </div>
                         </div>
 
-                        <div class="row mb-0">
+                        <div class="row mb-3">
                             <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary px-4">
                                     {{ __('Login') }}
                                 </button>
 
-                        {{--         @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
+                                <div class="mt-3">
+                                    <span class="text-muted">Belum punya akun?</span>
+                                    <a href="{{ route('register') }}" class="text-primary ms-1">
+                                        {{ __('Register') }}
                                     </a>
-                                    @endif --}}
                                 </div>
-                        </div> 
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
