@@ -58,6 +58,17 @@ class PeminjamanController extends Controller
         return redirect()->route('home')->with('error', 'Ruangan Sedang Tidak Tersedia');
     }
 
+    private function getSessionTime($sesi)
+    {
+        $sessionTimes = [
+            'pagi' => ['08:00', '12:00'],
+            'siang' => ['13:00', '17:00'],
+            'malam' => ['18:00', '22:00']
+        ];
+
+        return $sessionTimes[$sesi] ?? null;
+    }
+
     public function store(Request $request)
     {
         try {
@@ -66,33 +77,36 @@ class PeminjamanController extends Controller
             $request->validate([
                 'ruangan_id' => 'required',
                 'mahasiswa_nim' => 'required',
-                'tgl_mulai' => 'required',
-                'tgl_selesai' => 'required',
-                'jam_mulai' => 'required',
-                'jam_selesai' => 'required',
+                'tanggal' => 'required|date',
+                'sesi' => 'required|in:pagi,siang,malam',
                 'tujuan' => 'required',
             ]);
 
+            $sessionTime = $this->getSessionTime($request->sesi);
+            if (!$sessionTime) {
+                return redirect()->back()->with('error', 'Sesi tidak valid');
+            }
+
             // cek apakah sudah terdapat peminjaman pada waktu yang sama
             $peminjaman = Peminjaman::where('ruangan_id', $request->ruangan_id)
-                ->where('tgl_mulai', $request->tgl_mulai)
-                ->where('tgl_selesai', $request->tgl_selesai)
-                ->where('jam_mulai', $request->jam_mulai)
-                ->where('jam_selesai', $request->jam_selesai)
+                ->where('tgl_mulai', $request->tanggal)
+                ->where('tgl_selesai', $request->tanggal)
+                ->where('jam_mulai', $sessionTime[0])
+                ->where('jam_selesai', $sessionTime[1])
                 ->first();
 
             if ($peminjaman) {
-                return redirect()->route('home')->with('error', 'Ruangan sudah dipinjam pada waktu tersebut');
+                return redirect()->route('home')->with('error', 'Ruangan sudah dipinjam pada sesi tersebut');
             }
 
             // Trigger akan otomatis berjalan setelah insert
             Peminjaman::create([
                 'ruangan_id' => $request->ruangan_id,
                 'mahasiswa_nim' => $request->mahasiswa_nim,
-                'tgl_mulai' => $request->tgl_mulai,
-                'tgl_selesai' => $request->tgl_selesai,
-                'jam_mulai' => $request->jam_mulai,
-                'jam_selesai' => $request->jam_selesai,
+                'tgl_mulai' => $request->tanggal,
+                'tgl_selesai' => $request->tanggal,
+                'jam_mulai' => $sessionTime[0],
+                'jam_selesai' => $sessionTime[1],
                 'tujuan' => $request->tujuan,
             ]);
 
@@ -125,17 +139,51 @@ class PeminjamanController extends Controller
 
     public function update(Request $request, Peminjaman $peminjaman)
     {
-        $peminjaman->update([
-            'ruangan_id' => $request->ruangan_id,
-            'mahasiswa_nim' => $request->mahasiswa_nim,
-            'tgl_mulai' => $request->tgl_mulai,
-            'tgl_selesai' => $request->tgl_selesai,
-            'jam_mulai' => $request->jam_mulai,
-            'jam_selesai' => $request->jam_selesai,
-            'tujuan' => $request->tujuan,        
-        ]);
+        try {
+            DB::beginTransaction();
 
-        return redirect()->route('peminjaman.index');
+            $request->validate([
+                'ruangan_id' => 'required',
+                'mahasiswa_nim' => 'required',
+                'tanggal' => 'required|date',
+                'sesi' => 'required|in:pagi,siang,malam',
+                'tujuan' => 'required',
+            ]);
+
+            $sessionTime = $this->getSessionTime($request->sesi);
+            if (!$sessionTime) {
+                return redirect()->back()->with('error', 'Sesi tidak valid');
+            }
+
+            // cek apakah sudah terdapat peminjaman pada waktu yang sama (kecuali peminjaman yang sedang diedit)
+            $existingPeminjaman = Peminjaman::where('ruangan_id', $request->ruangan_id)
+                ->where('tgl_mulai', $request->tanggal)
+                ->where('tgl_selesai', $request->tanggal)
+                ->where('jam_mulai', $sessionTime[0])
+                ->where('jam_selesai', $sessionTime[1])
+                ->where('id', '!=', $peminjaman->id)
+                ->first();
+
+            if ($existingPeminjaman) {
+                return redirect()->back()->with('error', 'Ruangan sudah dipinjam pada sesi tersebut');
+            }
+
+            $peminjaman->update([
+                'ruangan_id' => $request->ruangan_id,
+                'mahasiswa_nim' => $request->mahasiswa_nim,
+                'tgl_mulai' => $request->tanggal,
+                'tgl_selesai' => $request->tanggal,
+                'jam_mulai' => $sessionTime[0],
+                'jam_selesai' => $sessionTime[1],
+                'tujuan' => $request->tujuan,
+            ]);
+
+            DB::commit();
+            return redirect()->route('peminjaman.index')->with('success', 'Peminjaman berhasil diperbarui');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function destroy(Peminjaman $peminjaman)
