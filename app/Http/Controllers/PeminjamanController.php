@@ -44,8 +44,19 @@ class PeminjamanController extends Controller
     public function create(Request $request)
     {
         $sesi = $request->query('sesi');
+        $tanggal = $request->query('tanggal', now()->toDateString());
         $ruangans = \App\Models\Ruangan::all();
-        return view('peminjaman.form', compact('ruangans', 'sesi'));
+
+        // Cek ketersediaan tiap ruangan
+        foreach ($ruangans as $ruangan) {
+            $isBooked = \App\Models\Peminjaman::where('ruangan_id', $ruangan->id)
+                ->where('tgl_mulai', $tanggal)
+                ->where('jam_mulai', $this->getSessionTime($sesi)[0])
+                ->exists();
+            $ruangan->tidak_tersedia = $isBooked;
+        }
+
+        return view('peminjaman.form', compact('ruangans', 'sesi', 'tanggal'));
     }
 
     private function getSessionTime($sesi)

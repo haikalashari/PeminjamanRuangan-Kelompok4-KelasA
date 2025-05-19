@@ -28,6 +28,17 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Form Peminjaman Ruang Sidang</h5>
+
+                        {{-- Form pilih tanggal, reload halaman saat tanggal berubah --}}
+                        <form method="GET" action="{{ route('peminjaman.create') }}" class="mb-3">
+                            <input type="hidden" name="sesi" value="{{ $sesi }}">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                <input type="date" class="form-control" name="tanggal" value="{{ $tanggal ?? now()->toDateString() }}" onchange="this.form.submit()" required>
+                            </div>
+                        </form>
+
+                        {{-- Form utama peminjaman --}}
                         <form class="row g-3" action="{{ isset($peminjaman) ? route('peminjaman.update', $peminjaman->id) : route('peminjaman.store') }}" method="POST">
                             @csrf
                             @if(isset($peminjaman))
@@ -67,8 +78,9 @@
                                     <option value="">-- Pilih Ruangan --</option>
                                     @foreach($ruangans as $item)
                                         <option value="{{ $item->id }}" data-kapasitas="{{ $item->kapasitas }}"
-                                            {{ (old('ruangan_id') == $item->id || (isset($peminjaman) && $peminjaman->ruangan_id == $item->id)) ? 'selected' : '' }}>
+                                            {{ $item->tidak_tersedia ? 'disabled style=background:#eee;color:#aaa;' : '' }}>
                                             {{ $item->nama }} (Kapasitas: {{ $item->kapasitas }})
+                                            @if($item->tidak_tersedia) - Tidak Tersedia @endif
                                         </option>
                                     @endforeach
                                 </select>
@@ -88,13 +100,6 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="tanggal" class="form-label">Tanggal</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                                    <input type="date" class="form-control" id="tanggal" name="tanggal" required value="{{ isset($peminjaman) ? $peminjaman->tgl_mulai : '' }}">
-                                </div>
-                            </div>
-                            <div class="col-md-12">
                                 <label class="form-label">Sesi yang dipilih</label>
                                 <input type="text" class="form-control bg-light" value="{{ ucfirst($sesi) }} 
                                     @if($sesi == 'pagi') (08:00-12:00)
@@ -102,6 +107,7 @@
                                     @elseif($sesi == 'malam') (18:00-22:00)
                                     @endif" readonly>
                                 <input type="hidden" name="sesi" value="{{ $sesi }}">
+                                <input type="hidden" name="tanggal" value="{{ $tanggal }}">
                             </div>
                             <div class="col-md-12">
                                 <label for="Tujuan" class="form-label">Tujuan</label>

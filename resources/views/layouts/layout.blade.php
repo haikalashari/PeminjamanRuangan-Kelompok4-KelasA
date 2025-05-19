@@ -241,6 +241,22 @@
 
     <!-- Template Main JS File -->
     <script src="{{ asset('js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                document.querySelectorAll('.alert').forEach(function(alert) {
+                    // Hanya alert selain alert-info yang akan hilang otomatis
+                    if (!alert.classList.contains('alert-info')) {
+                        alert.classList.add('fade');
+                        alert.classList.remove('show');
+                        setTimeout(function() {
+                            alert.remove();
+                        }, 500); // waktu transisi fade (0.5 detik)
+                    }
+                });
+            }, 3000); // 3 detik
+        });
+    </script>
 
 </body>
 </html>
