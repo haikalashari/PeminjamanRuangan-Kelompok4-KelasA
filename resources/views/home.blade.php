@@ -44,7 +44,7 @@
                     <div class="card text-center h-100">
                         <div class="card-body">
                             <h5 class="card-title">Sesi Siang</h5>
-                            <p class="card-text">13:00 - 17:00</p>
+                            <p class="card-text">12:30 - 14:30</p>
                             <a href="{{ route('peminjaman.create', ['sesi' => 'siang']) }}" class="btn btn-primary">Pinjam Sesi Siang</a>
                         </div>
                     </div>
@@ -53,9 +53,9 @@
                 <div class="col-md-4 mb-4">
                     <div class="card text-center h-100">
                         <div class="card-body">
-                            <h5 class="card-title">Sesi Malam</h5>
-                            <p class="card-text">18:00 - 22:00</p>
-                            <a href="{{ route('peminjaman.create', ['sesi' => 'malam']) }}" class="btn btn-primary">Pinjam Sesi Malam</a>
+                            <h5 class="card-title">Sesi Sore</h5>
+                            <p class="card-text">15.00 - 17:30</p>
+                            <a href="{{ route('peminjaman.create', ['sesi' => 'malam']) }}" class="btn btn-primary">Pinjam Sesi Sore</a>
                         </div>
                     </div>
                 </div>

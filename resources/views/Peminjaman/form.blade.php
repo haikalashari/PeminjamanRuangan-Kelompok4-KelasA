@@ -78,9 +78,10 @@
                                     <option value="">-- Pilih Ruangan --</option>
                                     @foreach($ruangans as $item)
                                         <option value="{{ $item->id }}" data-kapasitas="{{ $item->kapasitas }}"
-                                            {{ $item->tidak_tersedia ? 'disabled style=background:#eee;color:#aaa;' : '' }}>
+                                            {{ (isset($peminjaman) && $peminjaman->ruangan_id == $item->id) ? 'selected' : '' }}
+                                            {{ $item->tidak_tersedia && (!isset($peminjaman) || $peminjaman->ruangan_id != $item->id) ? 'disabled style=background:#eee;color:#aaa;' : '' }}>
                                             {{ $item->nama }} (Kapasitas: {{ $item->kapasitas }})
-                                            @if($item->tidak_tersedia) - Tidak Tersedia @endif
+                                            @if($item->tidak_tersedia && (!isset($peminjaman) || $peminjaman->ruangan_id != $item->id)) - Tidak Tersedia @endif
                                         </option>
                                     @endforeach
                                 </select>
@@ -104,7 +105,7 @@
                                 <input type="text" class="form-control bg-light" value="{{ ucfirst($sesi) }} 
                                     @if($sesi == 'pagi') (08:00-12:00)
                                     @elseif($sesi == 'siang') (13:00-17:00)
-                                    @elseif($sesi == 'malam') (18:00-22:00)
+                                    @elseif($sesi == 'sore' || $sesi == 'malam') (15:00-17:30)
                                     @endif" readonly>
                                 <input type="hidden" name="sesi" value="{{ $sesi }}">
                                 <input type="hidden" name="tanggal" value="{{ $tanggal }}">

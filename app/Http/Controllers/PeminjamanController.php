@@ -63,8 +63,8 @@ class PeminjamanController extends Controller
     {
         $sessionTimes = [
             'pagi' => ['08:00', '12:00'],
-            'siang' => ['13:00', '17:00'],
-            'malam' => ['18:00', '22:00']
+            'siang' => ['13:00', '14:30'],
+            'sore' => ['15.00', '17.30']
         ];
 
         return $sessionTimes[$sesi] ?? null;
@@ -78,8 +78,8 @@ class PeminjamanController extends Controller
             $request->validate([
                 'ruangan_id' => 'required',
                 'mahasiswa_nim' => 'required',
-                'tanggal' => 'required|date',
-                'sesi' => 'required|in:pagi,siang,malam',
+                'tanggal' => 'required|date|after_or_equal:today',
+                'sesi' => 'required|in:pagi,siang,sore',
                 'tujuan' => 'required',
             ]);
 
@@ -135,7 +135,29 @@ class PeminjamanController extends Controller
 
     public function edit(Peminjaman $peminjaman)
     {
-        return view('peminjaman.form', compact('peminjaman'));
+        $ruangans = Ruangan::all();
+        $sesi = null;
+        if ($peminjaman->jam_mulai == '08:00') {
+            $sesi = 'pagi';
+        } elseif ($peminjaman->jam_mulai == '13:00') {
+            $sesi = 'siang';
+        } elseif ($peminjaman->jam_mulai == '15:00' || $peminjaman->jam_mulai == '18:00') {
+            $sesi = 'sore'; // atau 'malam' jika memang jam 18:00 itu malam
+        }
+
+        $tanggal = $peminjaman->tgl_mulai;
+
+        // Cek ketersediaan tiap ruangan untuk tanggal dan sesi ini
+        foreach ($ruangans as $ruangan) {
+            $isBooked = Peminjaman::where('ruangan_id', $ruangan->id)
+                ->where('tgl_mulai', $tanggal)
+                ->where('jam_mulai', $peminjaman->jam_mulai)
+                ->where('id', '!=', $peminjaman->id)
+                ->exists();
+            $ruangan->tidak_tersedia = $isBooked;
+        }
+
+        return view('peminjaman.form', compact('peminjaman', 'ruangans', 'sesi', 'tanggal'));
     }
 
     public function update(Request $request, Peminjaman $peminjaman)
@@ -147,7 +169,7 @@ class PeminjamanController extends Controller
                 'ruangan_id' => 'required',
                 'mahasiswa_nim' => 'required',
                 'tanggal' => 'required|date',
-                'sesi' => 'required|in:pagi,siang,malam',
+                'sesi' => 'required|in:pagi,siang,sore',
                 'tujuan' => 'required',
             ]);
 
