@@ -104,7 +104,7 @@
                                 <label class="form-label">Sesi yang dipilih</label>
                                 <input type="text" class="form-control bg-light" value="{{ ucfirst($sesi) }} 
                                     @if($sesi == 'pagi') (08:00-12:00)
-                                    @elseif($sesi == 'siang') (13:00-17:00)
+                                    @elseif($sesi == 'siang') (12:30-14:30)
                                     @elseif($sesi == 'sore' || $sesi == 'malam') (15:00-17:30)
                                     @endif" readonly>
                                 <input type="hidden" name="sesi" value="{{ $sesi }}">

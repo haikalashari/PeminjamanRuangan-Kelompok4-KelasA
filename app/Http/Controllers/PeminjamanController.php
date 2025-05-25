@@ -63,7 +63,7 @@ class PeminjamanController extends Controller
     {
         $sessionTimes = [
             'pagi' => ['08:00', '12:00'],
-            'siang' => ['13:00', '14:30'],
+            'siang' => ['12:30', '14:30'],
             'sore' => ['15.00', '17.30']
         ];
 
@@ -136,12 +136,12 @@ class PeminjamanController extends Controller
     public function edit(Peminjaman $peminjaman)
     {
         $ruangans = Ruangan::all();
-        $sesi = null;
-        if ($peminjaman->jam_mulai == '08:00') {
+        $jam = \Carbon\Carbon::createFromFormat('H:i:s', $peminjaman->jam_mulai)->format('H:i');
+        if ($jam == '08:00') {
             $sesi = 'pagi';
-        } elseif ($peminjaman->jam_mulai == '13:00') {
+        } elseif ($jam == '12:30') {
             $sesi = 'siang';
-        } elseif ($peminjaman->jam_mulai == '15:00' || $peminjaman->jam_mulai == '18:00') {
+        } elseif ($jam == '15:00') {
             $sesi = 'sore'; // atau 'malam' jika memang jam 18:00 itu malam
         }
 
@@ -186,6 +186,7 @@ class PeminjamanController extends Controller
                 ->where('jam_selesai', $sessionTime[1])
                 ->where('id', '!=', $peminjaman->id)
                 ->first();
+
 
             if ($existingPeminjaman) {
                 return redirect()->back()->with('error', 'Ruangan sudah dipinjam pada sesi tersebut');
