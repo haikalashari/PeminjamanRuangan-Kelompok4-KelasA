@@ -82,6 +82,7 @@ Aplikasi Peminjaman Ruang Sidang Informatika UNTAN adalah sistem berbasis web ya
 -   **Login Admin:** Login sebagai admin, kelola data ruangan, pantau status ruangan, dan lihat statistik peminjaman di dashboard. untuk login admin default maka [admin1@gmail.com/password]
 -   **Login Mahasiswa:** Login, pilih sesi dan tanggal, pilih ruangan yang tersedia, isi tujuan, dan lakukan peminjaman. untuk login mahasiswa default maka [budi@gmail.com/password]
 
+## Tangkapan Layar 📷
 * *Halaman Login*
     ![image](https://github.com/user-attachments/assets/3fc6bf99-fb5c-4abf-993e-1c8a4f275bb3)
 
