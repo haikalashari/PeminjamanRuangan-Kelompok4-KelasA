@@ -20,8 +20,6 @@ Aplikasi Peminjaman Ruang Sidang Informatika UNTAN adalah sistem berbasis web ya
 
 ## Fitur Unggulan ✨
 
-(Perkakas AI seringkali dapat menyimpulkan beberapa fitur dengan menganalisis struktur kode, misal: mengidentifikasi modul untuk 'autentikasi pengguna', 'manajemen ruangan', 'pembuatan pemesanan'. Anda perlu menyempurnakan daftar ini.)
-
 -   **Autentikasi Pengguna:** Mendukung login, registrasi, dan manajemen profil untuk mahasiswa dan admin.
 -   **Peminjaman Ruangan:** Mahasiswa dapat melakukan pemesanan ruangan berdasarkan sesi waktu (pagi, siang, sore).
 -   **Manajemen Ruangan:** Admin dapat menambah, mengedit, dan menghapus data ruangan serta mengatur status ketersediaan ruangan.
@@ -37,8 +35,6 @@ Aplikasi Peminjaman Ruang Sidang Informatika UNTAN adalah sistem berbasis web ya
 
 
 ## Instalasi ⚙️
-
-(Perkakas AI dapat membantu menghasilkan langkah-langkah ini, terutama jika proyek Anda mengikuti konvensi standar untuk kerangka kerjanya. Anda perlu memverifikasi dan melengkapinya.)
 
 1.  **Gandakan (Clone) repositori:**
     ```bash
