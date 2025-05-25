@@ -16,6 +16,12 @@
         </div>
     @endif
 
+    @if(session('error'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('error') }}
+        </div>
+    @endif
+
     @if ($errors->any())
         <div class="alert alert-danger" role="alert">
             <ul>
@@ -55,7 +61,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Sesi Sore</h5>
                             <p class="card-text">15.00 - 17:30</p>
-                            <a href="{{ route('peminjaman.create', ['sesi' => 'malam']) }}" class="btn btn-primary">Pinjam Sesi Sore</a>
+                            <a href="{{ route('peminjaman.create', ['sesi' => 'sore']) }}" class="btn btn-primary">Pinjam Sesi Sore</a>
                         </div>
                     </div>
                 </div>

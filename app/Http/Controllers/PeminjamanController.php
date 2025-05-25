@@ -6,6 +6,7 @@ use App\Models\Ruangan;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanView;
 use Illuminate\Http\Request;
+use App\Http\Requests\StorePeminjamanRequest;
 use App\Models\StatusRuangan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -70,18 +71,10 @@ class PeminjamanController extends Controller
         return $sessionTimes[$sesi] ?? null;
     }
 
-    public function store(Request $request)
+    public function store(StorePeminjamanRequest $request)
     {
         try {
             DB::beginTransaction();
-
-            $request->validate([
-                'ruangan_id' => 'required',
-                'mahasiswa_nim' => 'required',
-                'tanggal' => 'required|date|after_or_equal:today',
-                'sesi' => 'required|in:pagi,siang,sore',
-                'tujuan' => 'required',
-            ]);
 
             $sessionTime = $this->getSessionTime($request->sesi);
             if (!$sessionTime) {
@@ -203,7 +196,7 @@ class PeminjamanController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('peminjaman.index')->with('success', 'Peminjaman berhasil diperbarui');
+            return redirect()->route('peminjaman.riwayat')->with('success', 'Peminjaman berhasil diperbarui');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
@@ -222,7 +215,7 @@ class PeminjamanController extends Controller
             $peminjaman->delete();
 
             DB::commit();
-            return redirect()->route('peminjaman.index');
+            return redirect()->route('peminjaman.riwayat')->with('success', 'Peminjaman berhasil dihapus');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
@@ -233,6 +226,7 @@ class PeminjamanController extends Controller
     {
         $peminjamans = Peminjaman::where('mahasiswa_nim', auth()->user()->nim)->get();
         return view('peminjaman.index', compact('peminjamans'));
+
     }
 
 }

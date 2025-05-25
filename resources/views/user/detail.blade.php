@@ -72,7 +72,9 @@
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">NIM/NIP</div>
-                    <div class="col-lg-9 col-md-8">{{ isset($user->admin) ? '' : $user->mahasiswa->nim }}</div>
+                    <div class="col-lg-9 col-md-8">
+                        {{ isset($user->admin) ? '' : (isset($user->mahasiswa) ? $user->mahasiswa->nim : '') }}
+                    </div>
                   </div>
 
                   <div class="row">
