@@ -57,8 +57,17 @@ class PeminjamanController extends Controller
             $ruangan->tidak_tersedia = $isBooked;
         }
 
-        return view('peminjaman.form', compact('ruangans', 'sesi', 'tanggal'));
+        // Ambil semua tanggal yang sudah penuh untuk sesi ini
+        $bookedDates = \App\Models\Peminjaman::where('jam_mulai', $this->getSessionTime($sesi)[0])
+            ->pluck('tgl_mulai')
+            ->toArray();
+
+        // dd($bookedDates);
+        return view('peminjaman.form', compact('ruangans', 'sesi', 'tanggal', 'bookedDates'));
     }
+
+
+
 
     private function getSessionTime($sesi)
     {

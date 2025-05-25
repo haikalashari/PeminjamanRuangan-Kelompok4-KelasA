@@ -34,9 +34,31 @@
                             <input type="hidden" name="sesi" value="{{ $sesi }}">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                                <input type="date" class="form-control" name="tanggal" value="{{ $tanggal ?? now()->toDateString() }}" onchange="this.form.submit()" required>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    name="tanggal" 
+                                    id="tanggal"
+                                    value="{{ $tanggal ?? now()->toDateString() }}" 
+                                    required
+                                    readonly
+                                >
                             </div>
                         </form>
+                        <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const bookedDates = @json($bookedDates ?? []);
+                            flatpickr("#tanggal", {
+                                dateFormat: "Y-m-d",
+                                minDate: "{{ $tanggal_lainnya ?? now()->toDateString() }}",
+                                disable: bookedDates,
+                                onChange: function(selectedDates, dateStr, instance) {
+                                    // Optional: submit form otomatis jika ingin
+                                    // instance.input.form.submit();
+                                }
+                            });
+                        });
+                        </script>
 
                         {{-- Form utama peminjaman --}}
                         <form class="row g-3" action="{{ isset($peminjaman) ? route('peminjaman.update', $peminjaman->id) : route('peminjaman.store') }}" method="POST">

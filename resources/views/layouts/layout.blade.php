@@ -29,6 +29,9 @@
     <!-- Template Main CSS File -->
     <link href="{{ asset('/css/style.css') }}" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <!-- =======================================================
     * Template Name: NiceAdmin
     * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
